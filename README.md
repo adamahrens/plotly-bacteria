@@ -1,0 +1,2 @@
+# plotly-bacteria
+Ploty homework 
