@@ -43,12 +43,21 @@ function updateDemographicInformation() {
 }
 
 function createBarPlot() {
-  console.log('bar plot created');
+  var currentSubject = samples.filter(function(item){
+    return item.id === selectedTestSubject
+  })[0];
+
+  var values = currentSubject.sample_values.slice(0,10).reverse();
+  var labels = currentSubject.otu_ids.slice(0,10).map(function(item){
+    return "OTU " + item;
+  }).reverse();
+  var hover = currentSubject.otu_labels.slice(0,10).reverse();
 
   // Create your trace.
   var trace = {
-    x: [20, 56, 100],
-    y: ['OTU 1167', 'OTU 2859', 'OTU 482'],
+    x: values,
+    y: labels,
+    text: hover,
     type: "bar",
     orientation: 'h'
   };
@@ -93,6 +102,8 @@ $(document).ready(function(){
          console.log('Test subject selected ' + subject);
          selectedTestSubject = subject;
          updateDemographicInformation();
+         createBarPlot();
+         createBubblePlot();
        }
    });
 })
