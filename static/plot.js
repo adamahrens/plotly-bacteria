@@ -43,9 +43,11 @@ function updateDemographicInformation() {
 }
 
 function createBarPlot() {
+  console.log('Creating Bar Plot');
   var currentSubject = samples.filter(function(item){
     return item.id === selectedTestSubject
   })[0];
+  console.log('Found bar ' + JSON.stringify(currentSubject));
 
   var values = currentSubject.sample_values.slice(0,10).reverse();
   var labels = currentSubject.otu_ids.slice(0,10).map(function(item){
@@ -70,24 +72,34 @@ function createBarPlot() {
 }
 
 function createBubblePlot() {
-  console.log('bubble plot created');
+  console.log('Creating bubble plot');
+  console.log('Select subject is ' + selectedTestSubject);
+  var currentSubject = samples.filter(function(item){
+    return item.id === selectedTestSubject;
+  })[0];
 
-  var trace1 = {
-    x: [1, 2, 3, 4],
-    y: [10, 11, 12, 13],
+  console.log('Found bubble ' + JSON.stringify(currentSubject));
+
+  var values = currentSubject.sample_values;
+  var ids = currentSubject.otu_ids;
+  var labels = currentSubject.otu_labels;
+
+  var trace = {
+    x: ids,
+    y: values,
+    text: labels,
     mode: 'markers',
     marker: {
-      size: [40, 60, 80, 100]
+      color: ids,
+      size: values
     }
   };
 
-  var data = [trace1];
+  var data = [trace];
 
   var layout = {
-    title: 'Marker Size',
-    showlegend: false,
-    height: 600,
-    width: 600
+    title: 'All Samples',
+    showlegend: false
   };
 
   Plotly.newPlot('bubble-plot', data, layout);
