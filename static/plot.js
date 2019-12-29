@@ -1,11 +1,48 @@
+var names = [];
+var metadata = [];
+var samples = [];
+var selectedTestSubject = '';
+
 d3.json("static/data.json").then((incomingData) => {
   console.log('Got json ' + JSON.stringify(incomingData));
-  createBarPlot(incomingData);
-  createBubblePlot(incomingData);
+  names = incomingData.names;
+  metadata = incomingData.metadata;
+  samples = incomingData.samples;
+  selectedTestSubject = names[0];
+  populateDropDown(names);
+  updateDemographicInformation();
+  createBarPlot();
+  createBubblePlot();
 });
 
+function populateDropDown(data) {
+  data.forEach(function(name) {
+    $("#test-subject-dropdown").append(new Option(name, name));
+  });
+}
 
-function createBarPlot(data) {
+function updateDemographicInformation() {
+  var currentSubject = metadata.filter(function(subject){
+    return subject.id === Number(selectedTestSubject)
+  })[0];
+  console.log('Found ' + JSON.stringify(currentSubject))
+  var id = currentSubject.id;
+  var ethnicity = currentSubject.ethnicity;
+  var gender = currentSubject.gender;
+  var age = currentSubject.age;
+  var location = currentSubject.location;
+  var bbtype = currentSubject.bbtype;
+  var wfreq = currentSubject.wfreq;
+  $('#demo-id').text(id);
+  $('#demo-ethnicity').text(ethnicity);
+  $('#demo-gender').text(gender);
+  $('#demo-age').text(age);
+  $('#demo-location').text(location);
+  $('#demo-bbtype').text(bbtype);
+  $('#demo-wfreq').text(wfreq);
+}
+
+function createBarPlot() {
   console.log('bar plot created');
 
   // Create your trace.
@@ -23,7 +60,7 @@ function createBarPlot(data) {
   Plotly.newPlot("bar-plot", data);
 }
 
-function createBubblePlot(data) {
+function createBubblePlot() {
   console.log('bubble plot created');
 
   var trace1 = {
@@ -54,6 +91,8 @@ $(document).ready(function(){
        var subject = this.value;
        if (subject !== '-1') {
          console.log('Test subject selected ' + subject);
+         selectedTestSubject = subject;
+         updateDemographicInformation();
        }
    });
 })
